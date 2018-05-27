@@ -1,11 +1,16 @@
 import sys
 import socket
 import select
+import time
 
 
-HOST = '127.0.0.1'
-RECV_BUFFER = 1024
-PORT = 8000
+from conf import (
+    HOST,
+    PORT,
+    ERROR_MESSAGE,
+    SUCCES_MESSAGE,
+    RECV_BUFFER,
+)
 
 SOCKET_LIST = []
 
@@ -22,27 +27,37 @@ def chat_server():
     print("Chat server started on port " + str(PORT))
 
     while True:
-        for sock in SOCKET_LIST:
-            readers, _,_ = select.select()
+        readers, _, _ = select.select(SOCKET_LIST, [], [], 1)
+        for reader in readers:
 
-            if sock == server_socket:
+            if reader == server_socket:
                 connection, address = server_socket.accept()
                 SOCKET_LIST.append(connection)
-
-                print('Log: client (%s, %s) connected' % address)
-
-                message_to_all(server_socket, sock, "User %s:%s entered to chat" % address)
+                print('SYSTEM LOG - '+time.asctime() + ' - User %s:%s connected to chat'%address)
 
             else:
-                data = sock.recv(RECV_BUFFER)
-                if data.decode() == 'quit':
-                    break
+                address_string = '[%s:%s]'%reader.getpeername()
+                try:
+                    data = address_string+' - '+reader.recv(RECV_BUFFER).decode()
+                    message_to_all(server_socket, reader, data.encode())
+                    print('SYSTEM LOG - ', time.asctime(), ' - ', data.strip())
+
+                except:
+                    print('SYSTEM LOG - '+time.asctime() + ' - Problems with ', address_string)
+                    reader.send(ERROR_MESSAGE)
 
 
-def message_to_all(server_socket, own_socket, message):
+def message_to_all(server_socket, reader, message):
     for sock in SOCKET_LIST:
-        if sock != server_socket and sock != own_socket:
-            sock.send(message.encode())
+        if sock != server_socket and sock != reader:
+            sock.send(message)
+    reader.send(SUCCES_MESSAGE)
+
+
+
+
+
+
 
 
 if __name__ == "__main__":
