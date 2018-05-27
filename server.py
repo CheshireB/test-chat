@@ -53,12 +53,5 @@ def message_to_all(server_socket, reader, message):
             sock.send(message)
     reader.send(SUCCES_MESSAGE)
 
-
-
-
-
-
-
-
 if __name__ == "__main__":
     sys.exit(chat_server())
