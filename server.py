@@ -87,13 +87,14 @@ def chat_server():
 
                 except:
                     SOCKET_LIST.pop(SOCKET_LIST.index(reader))
+                    SOCKET_LIST_LISTENER.pop(SOCKET_LIST_LISTENER.index(reader))
                     if reader in CONNECTION_LOGIN_DICT.keys():
                         CONNECTION_LOGIN_DICT.pop(reader)
 
 
 def message_to_all(server_socket, reader, message):
-    for sock in SOCKET_LIST:
-        if sock not in [server_socket, reader] and sock in SOCKET_LIST_LISTENER:
+    for sock in SOCKET_LIST_LISTENER:
+        if sock is not reader:
             sock.send(message)
     reader.send(SUCCESS_MESSAGE)
 

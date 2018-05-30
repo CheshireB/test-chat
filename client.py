@@ -65,6 +65,9 @@ def client():
                     elif not data:
                         reader.send(DROP_HASH)
 
+                    # Если пришло обычное сооьщение
+                    else:
+                        print(data.decode())
                 else:
                     message = sys.stdin.readline()
                     connection.send(message.encode())
