@@ -1,5 +1,5 @@
 HOST = '127.0.0.1'
-PORT = 5555
+PORT = 8000
 RECV_BUFFER = 1024
 
 MESSAGE = '0123456789chutkasimvolov'.encode()

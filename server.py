@@ -5,7 +5,7 @@ import time
 
 
 from conf import (
-    # HOST,
+    HOST,
     # PORT,
     ERROR_MESSAGE,
     SUCCESS_MESSAGE,
@@ -24,7 +24,6 @@ CONNECTION_LOGIN_DICT = {}
 
 def chat_server():
 
-    HOST = input('Input host(example 127.0.0.1):')
     PORT = int(input('Input port(example 8000):'))
 
     server_socket = socket.socket()
@@ -102,5 +101,7 @@ def message_to_all(server_socket, reader, message):
 if __name__ == "__main__":
     try:
         sys.exit(chat_server())
+    except KeyboardInterrupt:
+        pass
     except:
         print('Ooops, something went wrong!')

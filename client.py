@@ -1,6 +1,7 @@
 import socket
 import sys
 import select
+import time
 
 
 from conf import (
@@ -28,13 +29,18 @@ def client():
         # Получение логина
         while True:
             login = input('Choose your login(not blank): ')
+
             connection.send((LOGIN_HASH + login).encode())
 
             # Ожидание ответа от сервера
+            start_time = time.time()
             while True:
                 message = connection.recv(RECV_BUFFER)
                 if message:
                     break
+
+                elif abs(start_time-time.time()) > 5:
+                    raise TimeoutError
 
             if message == SUCCESS_MESSAGE:
                 print('SYSTEM - login in SUCCES')
