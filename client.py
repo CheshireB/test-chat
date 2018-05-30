@@ -79,5 +79,7 @@ def client():
 if __name__ == '__main__':
     try:
         sys.exit(client())
+    except KeyboardInterrupt:
+        pass
     except:
         print('PORT\HOST incorrect or server is down!')
