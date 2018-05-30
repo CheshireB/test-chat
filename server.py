@@ -36,15 +36,14 @@ def chat_server():
                 print('SYSTEM LOG - '+time.asctime() + ' - User %s:%s connected to chat'%address)
 
             else:
-                address_string = '[%s:%s]'%reader.getpeername()
                 try:
-                    data = address_string+' - '+reader.recv(RECV_BUFFER).decode()
+                    address_string = '[%s:%s]'%reader.getpeername()
+
+                    data = address_string + ' - ' + reader.recv(RECV_BUFFER).decode()
                     message_to_all(server_socket, reader, data.encode())
                     print('SYSTEM LOG - ', time.asctime(), ' - ', data.strip())
-
                 except:
-                    print('SYSTEM LOG - '+time.asctime() + ' - Problems with ', address_string)
-                    reader.send(ERROR_MESSAGE)
+                    SOCKET_LIST.pop(SOCKET_LIST.index(reader))
 
 
 def message_to_all(server_socket, reader, message):
